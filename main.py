@@ -28,10 +28,16 @@ def main():
     """
     parser = argparse.ArgumentParser(description="AIAgent User Input")
 
+    # argparse User_Prompt
     parser.add_argument("user_prompt", type=str, help="User prompt")
 
-    args = parser.parse_args() # !!! Now we can access `args.user_prompt`
+    # argparse Verbose Output
+    parser.add_argument("--verbose", action ="store_true", help="Enable verbose output")
 
+    args = parser.parse_args() # Naming our parsed arguments `args`
+                                # !!! Now we can access `args.user_prompt`
+
+    
 #Setting up Messages
     # getting response from model
     
@@ -39,14 +45,12 @@ def main():
         {"role": "user", "content": args.user_prompt}
     ]
 
+# Setting up Verbose flags
+
+    verbose_flag = args.verbose
+
 # HELPER FUNCTION TO GENERATE AND PRINT RESPONSE
-    generate_content(client, messages)
-
-
-
-
-
-
+    generate_content(client, messages, verbose_flag)
 
 
 
@@ -63,7 +67,7 @@ messages: a list of message objects. For now, just a single user message. Each m
 The method returns a chat completion object. The model's text answer lives at response.choices[0].message.content. Print it to see the model's answer.
 """
 
-def generate_content(client: OpenAI, messages):
+def generate_content(client: OpenAI, messages, verbose_flag):
     response = client.chat.completions.create(
     model ="openrouter/free",
     messages = messages,
@@ -72,22 +76,28 @@ def generate_content(client: OpenAI, messages):
     if not response.usage:  # You should also verify that the response's usage property is not None before trying to access its own properties. If it is None, that would likely indicate a failed API request, and you could raise a RuntimeError with a helpful message.
         raise RuntimeError("API response appears to be malformed. Failed to access Usage Propert since it is `None`. Likely, a failed API request.")
 
-# MODEL USAGE, TOKEN METADATA
-    Prompt_Tokens = response.usage.prompt_tokens
+    if verbose_flag == True:
 
-    Response_Tokens = response.usage.completion_tokens
+    # MODEL USAGE, TOKEN METADATA
+        Prompt_Tokens = response.usage.prompt_tokens
 
-    Total_Tokens = response.usage.total_tokens
+        Response_Tokens = response.usage.completion_tokens
 
-# MODEL USAGE TOKENS PRINTING    
-    print(f'Prompt tokens: {Prompt_Tokens}')
-    print(f'Response tokens: {Response_Tokens}')
-    print(f'Total tokens: {Total_Tokens}')
+        Total_Tokens = response.usage.total_tokens
 
-# MODEL RESPONSE PRINTING
-    print(response.choices[0].message.content)
+        user_prompt = messages[0]["content"] # need to access dict from list index, then call that dict with key
 
+    # MODEL USAGE TOKENS PRINTING
+        print(f'User prompt: {user_prompt}')    
+        print(f'Prompt tokens: {Prompt_Tokens}')
+        print(f'Response tokens: {Response_Tokens}')
+        print(f'Total tokens: {Total_Tokens}')
 
+    # MODEL RESPONSE PRINTING
+        print(response.choices[0].message.content)
+
+    else:
+        print(response.choices[0].message.content)
 
 
 
