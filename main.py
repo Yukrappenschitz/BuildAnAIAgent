@@ -76,10 +76,11 @@ else:
 
 
 
-
-#def main():
+"""
+def main():
     #print("Hello from buildanaiagent!")
 
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
     #main()
+"""
