@@ -1,0 +1,8 @@
+
+# CONSTANTS
+
+
+## LIMITS
+
+### CHARACTER LIMITS:
+LLM_Read_Characater_Limit = 10000
