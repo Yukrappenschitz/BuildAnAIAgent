@@ -5,6 +5,26 @@ The key idea is that the directory parameter will be treated as a relative path 
 We'll allow the LLM agent to specify which directory it wants to scan, but the working_directory will be set by us. 
 This means we can limit the scope of directories and files that the LLM is able to view.
 """
+# SCHEMA FOR get_files_info 
+
+schema_get_files_info = {
+    "type": "function",
+    "function": {
+        "name": "get_files_info",
+        "description": "Lists files in a specified directory relative to the working directory, providing file size and directory status",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "directory": {
+                    "type": "string",
+                    "description": "Directory path to list files from, relative to the working directory (default is the working directory itself)",
+                },
+            },
+        },
+    },
+}
+
+#!!!!! Notice that, in the declaration for the LLM, we don't even mention the working_directory parameter of the function! We'll be passing that argument "from the outside," without the LLM agent knowing about it or being able to affect it.
 
 def get_files_info( working_directory: str, directory: str = ".") -> str:
 

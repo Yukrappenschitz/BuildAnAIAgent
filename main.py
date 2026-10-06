@@ -1,4 +1,7 @@
 import os
+
+import json
+
 from dotenv import load_dotenv
 
 from openai import OpenAI # OPEN AI library
@@ -9,6 +12,9 @@ import argparse  # Built in Python Module to hande user inputs
 
 from prompts import system_prompt
 
+# FUNCTION IMPORTING
+
+from call_function import available_functions
 
 # OpenRouter API Key Importing
 load_dotenv()
@@ -41,7 +47,7 @@ def generate_content(client: OpenAI, messages, verbose_flag):
     response = client.chat.completions.create(
     model ="openrouter/free",
     messages = messages,
-    temperature= 0
+    tools = available_functions, 
 )
     
     if response.usage == None:  # You should also verify that the response's usage property is not None before trying to access its own properties. If it is None, that would likely indicate a failed API request, and you could raise a RuntimeError with a helpful message.
@@ -64,8 +70,21 @@ def generate_content(client: OpenAI, messages, verbose_flag):
         print(f'Response tokens: {Response_Tokens}')
         print(f'Total tokens: {Total_Tokens}')
 
+    # MODEL FUNCTION CALLs
+
+    message = response.choices[0].message # capturing message with message.tool_calls  property if the model made any function calls
+
+    if message.tool_calls != None:  # printing function name and args if any function calls were made
+
+        for tool_call in message.tool_calls: # iterating over all the function calls made
+
+            function_args = json.loads(tool_call.function.arguments or "{}") # using python standard library json.laods() to turn JSON string into a dict
+
+            print(f"Calling function: {tool_call.function.name}({function_args})") # printing function name with its corresponding arguments
+    
+    else:
     # MODEL RESPONSE PRINTING
-    print(response.choices[0].message.content)
+        print(response.choices[0].message.content)
 
 # Main Function
 
