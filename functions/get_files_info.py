@@ -59,3 +59,4 @@ def get_files_info( working_directory: str, directory: str = ".") -> str:
 
     except Exception as e:
         return f'Error: {type(e).__name__} - {e}'
+                        
