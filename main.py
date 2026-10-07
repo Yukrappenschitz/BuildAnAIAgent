@@ -1,20 +1,13 @@
 import os
-
 import json
-
 from dotenv import load_dotenv
-
 from openai import OpenAI # OPEN AI library
-
 import argparse  # Built in Python Module to hande user inputs
 
 # VAR import
-
 from prompts import system_prompt
-
 # FUNCTION IMPORTING
-
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 # OpenRouter API Key Importing
 load_dotenv()
@@ -43,7 +36,7 @@ messages: a list of message objects. For now, just a single user message. Each m
 The method returns a chat completion object. The model's text answer lives at response.choices[0].message.content. Print it to see the model's answer.
 """
 
-def generate_content(client: OpenAI, messages, verbose_flag):
+def generate_content(client: OpenAI, messages:list, verbose_flag:bool):
     response = client.chat.completions.create(
     model ="openrouter/free",
     messages = messages,
@@ -71,20 +64,31 @@ def generate_content(client: OpenAI, messages, verbose_flag):
         print(f'Total tokens: {Total_Tokens}')
 
     # MODEL FUNCTION CALLs
-
+    
+    # CAPTURING MESSAGE
     message = response.choices[0].message # capturing message with message.tool_calls  property if the model made any function calls
 
-    if message.tool_calls != None:  # printing function name and args if any function calls were made
+    if message.tool_calls != None:  # calling function and returing a `tool` message that has function result, ALSO PRINTING THE RESULT # printing function name and args if any function calls were made
 
         for tool_call in message.tool_calls: # iterating over all the function calls made
 
-            function_args = json.loads(tool_call.function.arguments or "{}") # using python standard library json.laods() to turn JSON string into a dict
+                                    #function_args = json.loads(tool_call.function.arguments or "{}") # using python standard library json.laods() to turn JSON string into a dict
 
-            print(f"Calling function: {tool_call.function.name}({function_args})") # printing function name with its corresponding arguments
-    
+                                    #print(f"Calling function: {tool_call.function.name}({function_args})") # printing function name with its corresponding arguments
+        # CATCHING tool_call message
+            result_message = call_function(tool_call, verbose_flag)
+
+            if result_message.get("content") == None:
+                raise RuntimeError(f'Error: Empty function response for {tool_call.function.name}. In tool message dict return, "content" is empty')
+
+            if verbose_flag == True:
+                print(f"-> {result_message['content']}")
+
     else:
     # MODEL RESPONSE PRINTING
-        print(response.choices[0].message.content)
+        print("Response:")
+        print(message.content)
+        
 
 # Main Function
 
@@ -96,7 +100,7 @@ def main():
     parser = argparse.ArgumentParser(description="AIAgent User Input")
 
     # argparse User_Prompt
-    parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument("user_prompt", type=str, help="User prompt to send to LLM")
 
     # argparse Verbose Output
     parser.add_argument("--verbose", action ="store_true", help="Enable verbose output")
