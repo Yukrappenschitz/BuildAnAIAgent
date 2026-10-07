@@ -2,6 +2,31 @@ import os
 import subprocess
 from config import Py_File_Execution_Time_Limit  
 
+# SCHEMA FOR run_python_file
+
+schema_run_python_file = {
+    "type": "function",              # specifying type to LLM model
+    "function": {                       # specifying properties of type
+        "name": "run_python_file",              # name of function
+        "description": "Takes in a file path and arguments and if file path is a python file, runs given file path with given arguments and returns an output string of the results of running the python file",      # description of what func does
+        "parameters": {              # parameters to allow model to understand the args of the functions
+            "type": "object",
+            "properties": {                 # dictionary of desciptions of arguments, their name + type + description of args
+                "file_path": {           # name of each args
+                    "type": "string",              # type of specified args
+                    "description": "File path to run file, relative to the working directory",        # description of specified args
+                },
+                "args": {
+                    "type": "array of strings",
+                    "description": "Optional Arguments for the given file path file to use when it is being run",
+                },
+            },
+        "required" : ["file_path"],               # if function has required arguments, add them as a parameter with key "required" = ["list of required args"]
+        }
+    }
+
+}
+
 
 def run_python_file(
     working_directory: str, file_path: str, args: list[str] | None = None

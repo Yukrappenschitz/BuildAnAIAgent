@@ -1,5 +1,31 @@
 import os
 
+# SCHEMA FOR write_file 
+
+schema_write_file = {
+    "type": "function",              # specifying type to LLM model
+    "function": {                       # specifying properties of type
+        "name": "write_file",              # name of function
+        "description": "Writes given content to given file path, file path is relative to the working directory",            # description of what func does
+        "parameters": {              # parameters to allow model to understand the args of the functions
+            "type": "object",
+            "properties": {                 # dictionary of desciptions of arguments, their name + type + description of args
+                "file_path": {           # name of each args
+                    "type": "string",              # type of specified args
+                    "description": "File path to write to, relative to the working directory",        # description of specified args
+                },
+                "content": {
+                    "type": "string",
+                    "description": "Content to write to the given file path file",
+                },
+            },
+        "required" : ["file_path","content"],               # if function has required arguments, add them as a parameter with key "required" = ["list of required args"]
+        }
+    }
+
+}
+
+
 def write_file(working_directory: str, file_path: str, content: str) -> str:
 
     try:

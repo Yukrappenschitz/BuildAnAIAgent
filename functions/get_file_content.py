@@ -2,6 +2,29 @@ import os
 
 from config import LLM_Read_Characater_Limit  # 10,000 character Limit
 
+# SCHEMA FOR get_file_content
+
+schema_get_file_content = {
+    "type": "function",
+    "function": {
+        "name": "get_file_content",
+        "description": "Prints the contents of a specified file upto a configureable MAX_CHARACTER limit into a string, truncates file if over MAX_CHARS limit and adds to end of the string that file is truncated at that limit",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "File path to get file contents from, relative to the working directory",
+                }
+            },
+            "required": ["file_path"], 
+        }
+    }
+
+}
+
+
+
 def get_file_content(working_directory: str, file_path: str) -> str:
 
     try:
