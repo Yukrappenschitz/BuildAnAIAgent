@@ -44,7 +44,7 @@ def call_function(tool_call, verbose: bool = False) -> dict:
     if function_name not in function_map:       # 5. If the provided function name is not found in your mapping, return a tool message describing the error:
         err_tool_message = {
             "role": "tool",
-            "tool_call_id": tool_call.id,
+            "tool_call_id": tool_call_id,
             "content": f"Error: Unknown function: {function_name}",
         }
         return err_tool_message
@@ -59,7 +59,7 @@ def call_function(tool_call, verbose: bool = False) -> dict:
 
         tool_message = {
             "role": "tool",
-            "tool_call_id": tool_call.id,
+            "tool_call_id": tool_call_id,
             "content": result,
         }
 
