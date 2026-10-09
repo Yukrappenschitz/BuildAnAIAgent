@@ -7,7 +7,7 @@ import argparse  # Built in Python Module to hande user inputs
 
 # VAR import
 from prompts import system_prompt
-from config import AGENT_LOOP_ITERATION_LIMIT
+from config import AGENT_LOOP_ITERATION_LIMIT, LLM_MODEL, LLM_MODEL_TEMPERATURE
 
 # FUNCTION IMPORTING
 from call_function import available_functions, call_function
@@ -95,9 +95,10 @@ The method returns a chat completion object. The model's text answer lives at re
 
 def generate_content(client: OpenAI, messages:list, verbose_flag:bool):
     response = client.chat.completions.create(
-    model ="openrouter/free",
+    model =LLM_MODEL,
     messages = messages,
-    tools = available_functions, 
+    tools = available_functions,
+    temperature= LLM_MODEL_TEMPERATURE 
 )
     
     if response.usage == None:  # should also verify that the response's usage property is not None before trying to access its own properties. If it is None, that would likely indicate a failed API request, and you could raise a RuntimeError with a helpful message.
