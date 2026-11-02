@@ -4,7 +4,7 @@
 # !!!! DO NOT GIVE ACESS TO FOLDERS THAT YOU DONT HAVE BACKED UP AND SAVED OR CONTAIN ANYTHING SENSITIVE
 # ONLY GIVE ACCESS TO THE FOLDER NECESSARY 
 # !!!! LLM HAS WRITE ACESS TO FILES SO DO NOT GIVE ACCESSS HAPHAZARDLY ONCE AGAIN!!!!
-WORKING_DIR = "./calculator"      # relative path 
+WORKING_DIR = "./testing_working_dir"      # relative path 
 
 # !!! LLM MODEL SELECTION:
 # Default is openrouter.ai Free LLM MOdel rotation
@@ -27,7 +27,6 @@ Creative Writing / Brainstorming	0.7 to 1.0	Flattens the probability curve to su
 """
 
 LLM_MODEL_TEMPERATURE: float|int = 0
-
 
 
 # CONSTANTS
